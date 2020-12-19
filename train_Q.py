@@ -110,6 +110,7 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
                 print('saving the latest model (epoch %d, total_steps %d)' % (epoch, total_steps))
                 model.module.save('latest')
                 np.savetxt(iter_path, (epoch, epoch_iter), delimiter=',', fmt='%d')
+    # Train with a soft quantizer            
     elif epoch >= opt.Q_train_epoch and epoch < opt.Q_hard_epoch:
         if epoch == opt.Q_train_epoch:
             model.module.save('floating_final')
@@ -144,6 +145,7 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
             center = torch.Tensor(center).cuda()
             model.module.update_center(center)
         model.module.netE.train()
+        # Train with a hard quantizer            
         for i, data in enumerate(dataset, start=epoch_iter):
             iter_start_time = time.time()
             total_steps += opt.batchSize
